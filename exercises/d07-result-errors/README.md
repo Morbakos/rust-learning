@@ -1,8 +1,43 @@
 # J07 — Result et gestion d'erreurs
 
-**Durée** : 15 min (base) · +15 min (bonus)
+**Durée** : 3-5 min de mini-leçon + ~10 min d'exercice · +10-15 min de bonus
 **Notions** : `Result<T, E>`, opérateur `?`, type d'erreur personnalisé, `Display`, `std::error::Error`
-**Lecture facultative (5 min)** : Rust Book, chapitre 9 (Error Handling)
+
+## Mini-leçon (3-5 min)
+
+**`Result<T, E>`** : `Ok(valeur)` ou `Err(erreur)`. C'est la façon idiomatique de signaler qu'une opération peut échouer, sans exceptions. Le compilateur t'oblige à gérer l'erreur.
+
+**L'opérateur `?`** : « si c'est une erreur, sors de la fonction en la renvoyant ; sinon, déballe la valeur ». Il remplace des `match` répétitifs.
+
+**Type d'erreur personnalisé.** On définit souvent un `enum` qui liste les causes d'échec possibles.
+
+```rust
+#[derive(Debug)]
+enum ConfigError {
+    Missing,
+    BadNumber(String),
+}
+
+fn read_port(s: &str) -> Result<u16, ConfigError> {
+    let raw = s.strip_prefix("port=").ok_or(ConfigError::Missing)?;  // Option -> Result
+    raw.parse::<u16>()
+        .map_err(|_| ConfigError::BadNumber(raw.to_string()))        // change le type d'erreur
+}
+
+fn total(a: &str, b: &str) -> Result<u16, ConfigError> {
+    Ok(read_port(a)? + read_port(b)?)     // la 1re erreur arrête tout
+}
+```
+
+- `ok_or(e)` : `Option` → `Result` (`None` devient `Err(e)`).
+- `map_err(f)` : transforme l'erreur.
+- Pour qu'une erreur soit « citoyenne » : implémenter `Display` (message lisible) et `std::error::Error`.
+
+**`panic!`** (ou `unwrap`) est réservé aux bugs « impossibles », pas aux entrées utilisateur invalides.
+
+**Pour l'exercice** : `line.split_once('=')`, `ok_or`, `map_err`, `?`.
+
+*Pour aller plus loin (facultatif)* : Rust Book, chapitre 9 (Error Handling)
 
 ## Consigne
 

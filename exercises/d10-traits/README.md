@@ -1,8 +1,44 @@
 # J10 — Traits et polymorphisme
 
-**Durée** : 15 min (base) · +15 min (bonus)
+**Durée** : 3-5 min de mini-leçon + ~10 min d'exercice · +10-15 min de bonus
 **Notions** : `trait`, méthode par défaut, `impl Trait for Type`, `dyn Trait`, bornes génériques
-**Lecture facultative (5 min)** : Rust Book, chapitre 10.2 (Traits) (et la section sur les trait objects)
+
+## Mini-leçon (3-5 min)
+
+**Un `trait`** décrit un comportement que des types peuvent implémenter (comme une interface). Il peut fournir des **méthodes par défaut**.
+
+```rust
+trait Greet {
+    fn name(&self) -> String;
+
+    fn hello(&self) -> String {               // méthode par défaut
+        format!("Bonjour, {} !", self.name())
+    }
+}
+
+struct English;
+impl Greet for English {
+    fn name(&self) -> String { "Sam".to_string() }
+}
+```
+
+**Deux façons de les utiliser :**
+
+1. **Génériques** `fn f<T: Greet>(x: &T)` : le compilateur génère une version par type (« monomorphisation ») : aucun coût à l'exécution. Le type doit être connu à la compilation.
+2. **Objets-traits** `&dyn Greet` ou `Box<dyn Greet>` : **un seul type de conteneur pour des types différents** (liste hétérogène), avec un petit coût d'appel dynamique.
+
+```rust
+fn all_hello(items: &[Box<dyn Greet>]) -> Vec<String> {
+    items.iter().map(|g| g.hello()).collect()
+}
+
+fn largest<T: PartialOrd + Copy>(xs: &[T]) -> Option<T> { /* ... */ }
+//                ^ « borne » : T doit pouvoir être comparé ET copié
+```
+
+**Pour l'exercice** : `format!("{} says {}", self.name(), self.sound())`, `iter().map(...).collect()`, et pour `largest` : boucle avec comparaison, ou `fold`. Pour `Display`, utilise `write!(f, "...")`.
+
+*Pour aller plus loin (facultatif)* : Rust Book, chapitre 10.2 (Traits) (et la section sur les trait objects)
 
 ## Consigne
 

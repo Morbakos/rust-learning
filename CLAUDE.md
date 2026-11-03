@@ -7,6 +7,11 @@ Réponds en français, de façon concise.
 ## Déroulé d'une session
 
 1. Je te dis quel exercice je fais (dossier `exercises/dXX-...`).
+   **Avant que je code**, donne-moi une explication courte (3-5 min, une dizaine de lignes)
+   des concepts clés de l'exercice, en t'appuyant sur la « Mini-leçon » de son README sans la
+   recopier : l'idée, pourquoi ça existe en Rust, un petit exemple, et le lien avec le but final
+   (moteur d'inférence) quand il y en a un. Vérifie que j'ai compris avec **une** question rapide.
+   Ne dévoile pas la solution de l'exercice.
 2. Quand je dis « c'est fait » / « valide » :
    - lance `cargo test -p <exercice>` (et `-- --include-ignored` si j'ai fait le bonus),
    - lance `cargo clippy -p <exercice> -- -D warnings` et `cargo fmt -p <exercice> -- --check`,

@@ -1,8 +1,32 @@
 # J12 — Itérateurs
 
-**Durée** : 15 min (base) · +15 min (bonus)
+**Durée** : 3-5 min de mini-leçon + ~10 min d'exercice · +10-15 min de bonus
 **Notions** : `iter()`, `filter`, `map`, `zip`, `sum`, `flat_map`, `collect`, `max_by`
-**Lecture facultative (5 min)** : Rust Book, chapitre 13.2 (Iterators)
+
+## Mini-leçon (3-5 min)
+
+**Un itérateur** produit des valeurs une par une. Les **adaptateurs** (`map`, `filter`, `zip`, `flat_map`, `take`...) sont **paresseux** : ils ne font rien tant qu'un **consommateur** (`sum`, `collect`, `count`, `max_by`, `for`...) ne tire dessus.
+
+```rust
+let v = vec![1, 2, 3, 4];
+
+let total: i32 = v.iter()
+    .filter(|&&x| x % 2 == 0)      // garde les pairs
+    .map(|&x| x * x)               // les met au carré
+    .sum();                        // consommateur : lance le calcul (20)
+
+let pairs: Vec<(i32, char)> = v.iter().cloned().zip("abcd".chars()).collect();
+
+let words: Vec<&str> = ["a b", "c"].iter().flat_map(|l| l.split_whitespace()).collect();
+```
+
+- `iter()` emprunte (donne des `&T`), `iter_mut()` donne des `&mut T`, `into_iter()` consomme la collection.
+- `collect()` a besoin de connaître le type visé : `Vec<_>`, `String`, `HashMap<_, _>`... (annotation ou « turbofish » `collect::<Vec<_>>()`).
+- **Zero-cost** : une chaîne d'itérateurs est compilée en boucle aussi rapide qu'une boucle écrite à la main. C'est ainsi qu'on écrit `dot`, `matvec`, `softmax` en Rust.
+
+**Pour l'exercice** : `a.iter().zip(b.iter()).map(|(x, y)| x * y).sum::<f32>()`, `assert_eq!(a.len(), b.len())` (provoque la panique voulue), `f32::max`, `fold`, `.enumerate()`, `max_by(|a, b| a.1.partial_cmp(b.1).unwrap())`.
+
+*Pour aller plus loin (facultatif)* : Rust Book, chapitre 13.2 (Iterators)
 
 ## Consigne
 

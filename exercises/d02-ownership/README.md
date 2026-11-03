@@ -1,8 +1,34 @@
 # J02 — Ownership : qui possède quoi ?
 
-**Durée** : 15 min (base) · +15 min (bonus)
+**Durée** : 3-5 min de mini-leçon + ~10 min d'exercice · +10-15 min de bonus
 **Notions** : move, `String` vs `&str`, `&mut`, une seule référence mutable à la fois
-**Lecture facultative (5 min)** : Rust Book, chapitre 4.1 (What is Ownership?)
+
+## Mini-leçon (3-5 min)
+
+**C'est LE concept de Rust.** Pas de ramasse-miettes : la mémoire est libérée automatiquement, au moment précis où son propriétaire sort de portée. C'est ce qui rend Rust rapide **et** sûr (utile pour gérer de gros tenseurs en mémoire).
+
+**Trois règles** : chaque valeur a un **propriétaire** ; il n'y en a qu'**un** à la fois ; quand il disparaît, la valeur est libérée.
+
+**Move.** Affecter ou passer une valeur à une fonction **déplace** la propriété : l'ancienne variable n'est plus utilisable. Les petits types simples (`i32`, `f64`, `bool`, `char`) sont *copiés* à la place. `.clone()` fait une copie explicite.
+
+**Emprunter.** `&T` prête en lecture, `&mut T` prête en écriture, sans céder la propriété.
+
+```rust
+let s1 = String::from("salut");
+let s2 = s1;                 // move : s1 n'est plus utilisable
+// println!("{s1}");         // ❌ erreur de compilation
+
+fn consume(s: String) {}              // prend possession (s est libérée à la fin)
+fn read(s: &String) -> usize { s.len() }          // emprunt en lecture
+fn edit(s: &mut String) { s.push('?'); }          // emprunt en écriture
+
+let mut t = String::from("hey");
+edit(&mut t);                // on prête t en écriture, on le récupère après
+```
+
+**Pour l'exercice** : `s.len()` compte des **octets** ; `push_str`, `push`, `Vec::retain`, `Vec::drain(..)`. Le compilateur t'expliquera ses refus : lis bien ses messages, ils sont excellents.
+
+*Pour aller plus loin (facultatif)* : Rust Book, chapitre 4.1 (What is Ownership?)
 
 ## Consigne
 

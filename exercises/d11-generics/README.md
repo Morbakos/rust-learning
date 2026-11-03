@@ -1,8 +1,41 @@
 # J11 — Génériques : une pile `Stack<T>`
 
-**Durée** : 15 min (base) · +15 min (bonus)
+**Durée** : 3-5 min de mini-leçon + ~10 min d'exercice · +10-15 min de bonus
 **Notions** : types génériques, `impl<T>`, bornes de traits, `Default`
-**Lecture facultative (5 min)** : Rust Book, chapitre 10.1 (Generic Data Types)
+
+## Mini-leçon (3-5 min)
+
+**Génériques** : écrire du code valable pour **n'importe quel type** `T`, vérifié à la compilation. Tu en utilises déjà : `Vec<T>`, `Option<T>`, `HashMap<K, V>`.
+
+- `struct Stack<T>` : une pile d'éléments de type `T`.
+- `impl<T> Stack<T> { ... }` : méthodes disponibles pour tous les `T`.
+- On peut ajouter des **blocs `impl` conditionnels** : `impl<T: Display> Stack<T>` n'existe que si `T` sait s'afficher.
+
+```rust
+struct Pair<T> {
+    a: T,
+    b: T,
+}
+
+impl<T> Pair<T> {
+    fn new(a: T, b: T) -> Self { Pair { a, b } }
+    fn first(&self) -> &T { &self.a }         // renvoie une RÉFÉRENCE : on ne vole rien
+}
+
+impl<T: PartialOrd + Copy> Pair<T> {
+    fn max(&self) -> T {                       // seulement si T est comparable et copiable
+        if self.a > self.b { self.a } else { self.b }
+    }
+}
+```
+
+**Pourquoi `peek` renvoie `Option<&T>`** : on veut *regarder* sans retirer ni déplacer l'élément. Renvoyer `T` obligerait à le déplacer hors de la pile.
+
+**Performance** : le compilateur génère une version spécialisée par type utilisé (monomorphisation), donc un `Stack<f32>` est aussi rapide qu'une version écrite à la main.
+
+**Pour l'exercice** : `Vec::push`, `pop`, `last()`, `len()`, `is_empty()`, `iter().map(|x| x.to_string()).collect::<Vec<_>>().join(", ")`.
+
+*Pour aller plus loin (facultatif)* : Rust Book, chapitre 10.1 (Generic Data Types)
 
 ## Consigne
 

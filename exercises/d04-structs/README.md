@@ -1,8 +1,48 @@
 # J04 — Structs et méthodes
 
-**Durée** : 15 min (base) · +15 min (bonus)
+**Durée** : 3-5 min de mini-leçon + ~10 min d'exercice · +10-15 min de bonus
 **Notions** : `struct`, `impl`, `&self` vs `&mut self`, fonctions associées, `derive`
-**Lecture facultative (5 min)** : Rust Book, chapitre 5 (Using Structs)
+
+## Mini-leçon (3-5 min)
+
+**`struct`** regroupe des champs nommés. Les **méthodes** s'écrivent dans un bloc `impl`.
+
+- `&self` : la méthode **lit** l'objet.
+- `&mut self` : elle le **modifie**.
+- `self` : elle le **consomme** (rare).
+- Pas de `self` : *fonction associée*, appelée avec `Type::nom(...)` (le « constructeur » est par convention `new`). `Self` désigne le type courant.
+
+`#[derive(...)]` génère automatiquement des comportements : `Debug` (affichage `{:?}`), `Clone`, `PartialEq` (`==`)...
+
+```rust
+#[derive(Debug, Clone, PartialEq)]
+struct Point {
+    x: f64,
+    y: f64,
+}
+
+impl Point {
+    fn new(x: f64, y: f64) -> Self {          // fonction associée
+        Point { x, y }                        // raccourci : x: x, y: y
+    }
+
+    fn norm(&self) -> f64 {                   // lecture
+        (self.x * self.x + self.y * self.y).sqrt()
+    }
+
+    fn shift(&mut self, dx: f64) {            // écriture
+        self.x += dx;
+    }
+}
+
+let mut p = Point::new(3.0, 4.0);
+p.shift(1.0);
+println!("{:?} {}", p, p.norm());
+```
+
+**Pour l'exercice** : `f64::max`, `a > b`, et pour `largest` : `iter().max_by(|a, b| a.area().partial_cmp(&b.area()).unwrap())` (les `f64` ne sont pas `Ord` à cause de `NaN`, d'où `partial_cmp`).
+
+*Pour aller plus loin (facultatif)* : Rust Book, chapitre 5 (Using Structs)
 
 ## Consigne
 

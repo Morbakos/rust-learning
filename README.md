@@ -18,7 +18,7 @@ automatiquement (tests + CI) et relus par un agent IA.
 
 | Format | Contenu |
 |---|---|
-| **15 min** | lire la consigne (2 min) → coder jusqu'au vert (10 min) → validation + question de l'agent (3 min) |
+| **15 min** | mini-leçon (3-5 min, dans le README de l'exercice ou expliquée par l'agent) → exercice jusqu'au vert (~8 min) → validation + question de l'agent (2 min) |
 | **30 min** | idem + **bonus** (tests `#[ignore]`) + une question de compréhension plus poussée |
 
 Si tu bloques plus de 5 minutes, demande un **indice** à l'agent (pas la solution).

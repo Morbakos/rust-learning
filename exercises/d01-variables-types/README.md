@@ -1,8 +1,35 @@
 # J01 — Variables, types et fonctions
 
-**Durée** : 15 min (base) · +15 min (bonus)
+**Durée** : 3-5 min de mini-leçon + ~10 min d'exercice · +10-15 min de bonus
 **Notions** : `let`, `mut`, shadowing, types numériques, `Option`, tranches `&[T]`
-**Lecture facultative (5 min)** : Rust Book, chapitre 3 (Common Programming Concepts)
+
+## Mini-leçon (3-5 min)
+
+**Variables.** Elles sont **immuables par défaut** ; `mut` autorise la modification. Le *shadowing* (`let x = ...` une seconde fois) crée une **nouvelle** variable du même nom, éventuellement d'un autre type.
+
+**Types.** Entiers : `i32` (par défaut), `u32` (positif), `usize` (indices et tailles). Flottants : `f64` (par défaut), `f32`. Rust ne convertit **jamais** implicitement : on écrit `n as f64`. Attention : `7 / 2` vaut `3` (division entière).
+
+**Fonctions.** La dernière expression, **sans `;`**, est la valeur renvoyée. `if` et `match` sont aussi des expressions.
+
+```rust
+let x = 5;              // immuable
+let mut y = 5;          // modifiable
+y += 1;
+let x = x * 2;          // shadowing : nouvelle variable x (10)
+
+fn double(n: i32) -> i32 {
+    n * 2               // pas de `;` : c'est la valeur de retour
+}
+
+let label = if y > 5 { "grand" } else { "petit" };   // if = expression
+let ratio = 3 as f64 / 2.0;                          // conversion explicite
+```
+
+**Tranches et `Option`.** `&[i32]` est une *vue* sur une suite d'entiers (tableau ou `Vec`). `Option<T>` vaut `Some(valeur)` ou `None` : c'est comme ça que Rust représente « il n'y a rien » (pas de `null`).
+
+**Pour l'exercice** : `n % 3 == 0`, `values.is_empty()`, `for v in values { ... }`, `n.to_string()`, `format!("...")`.
+
+*Pour aller plus loin (facultatif)* : Rust Book, chapitre 3 (Common Programming Concepts)
 
 ## Consigne
 

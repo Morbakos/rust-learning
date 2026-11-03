@@ -1,8 +1,33 @@
 # J03 — Emprunts et tranches (slices)
 
-**Durée** : 15 min (base) · +15 min (bonus)
+**Durée** : 3-5 min de mini-leçon + ~10 min d'exercice · +10-15 min de bonus
 **Notions** : `&T`, `&mut T`, `&str`, `&[T]`, `&mut [T]`, indices et sous-tranches
-**Lecture facultative (5 min)** : Rust Book, chapitre 4.2 et 4.3 (References, Slices)
+
+## Mini-leçon (3-5 min)
+
+**Règle d'or des emprunts** : à un instant donné, tu as soit **plusieurs** `&` (lecture), soit **un seul** `&mut` (écriture), jamais les deux. Cela supprime toute une classe de bugs (modifier une donnée pendant qu'on la lit).
+
+**Tranche (slice).** Une `&[T]` ou un `&str` est un « pointeur + longueur » vers une portion de données **sans copie**. Un `&str` est une tranche de `String`.
+
+```rust
+let v = vec![10, 20, 30, 40, 50];
+let a: &[i32] = &v[1..4];      // [20, 30, 40] (début inclus, fin exclue)
+let b = &v[..2];               // [10, 20]
+let c = &v[3..];               // [40, 50]
+
+let s = String::from("bonjour monde");
+let mot: &str = &s[0..7];      // "bonjour" : aucune copie, juste une vue
+
+fn somme(xs: &[i32]) -> i32 { xs.iter().sum() }
+somme(&v);                     // &Vec<i32> se convertit en &[i32]
+somme(&[1, 2, 3]);             // un tableau aussi
+```
+
+**`&mut [T]`** : on peut modifier les éléments en place (mais pas changer la taille).
+
+**Pour l'exercice** : `s.find(' ')` (renvoie une `Option<usize>`), `s.split_whitespace().next()`, `values.len()`, `values.swap(i, j)`, `values.windows(k)`, `values.iter().sum()`. Pas besoin de `.clone()`.
+
+*Pour aller plus loin (facultatif)* : Rust Book, chapitre 4.2 et 4.3 (References, Slices)
 
 ## Consigne
 
