@@ -1,0 +1,67 @@
+name: CI
+
+on:
+  pull_request:
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: clippy, rustfmt
+
+      - uses: Swatinem/rust-cache@v2
+
+      - name: Détecter les exercices modifiés
+        id: changed
+        run: |
+          list=$(git diff --name-only "origin/${{ github.base_ref }}...HEAD" \
+            | grep '^exercises/' | cut -d/ -f2 | sort -u | tr '\n' ' ' || true)
+          echo "list=$list" >> "$GITHUB_OUTPUT"
+          echo "Exercices modifiés : ${list:-aucun}"
+
+      - name: Tests (base)
+        if: steps.changed.outputs.list != ''
+        env:
+          LIST: ${{ steps.changed.outputs.list }}
+        run: |
+          for ex in $LIST; do
+            echo "::group::cargo test -p $ex"
+            cargo test -p "$ex"
+            echo "::endgroup::"
+          done
+
+      - name: Tests (bonus)
+        if: steps.changed.outputs.list != '' && contains(github.event.pull_request.labels.*.name, 'bonus')
+        env:
+          LIST: ${{ steps.changed.outputs.list }}
+        run: |
+          for ex in $LIST; do
+            echo "::group::cargo test -p $ex -- --include-ignored"
+            cargo test -p "$ex" -- --include-ignored
+            echo "::endgroup::"
+          done
+
+      - name: Clippy
+        if: steps.changed.outputs.list != ''
+        env:
+          LIST: ${{ steps.changed.outputs.list }}
+        run: |
+          for ex in $LIST; do
+            cargo clippy -p "$ex" -- -D warnings
+          done
+
+      - name: Format (informatif)
+        if: steps.changed.outputs.list != ''
+        continue-on-error: true
+        env:
+          LIST: ${{ steps.changed.outputs.list }}
+        run: |
+          for ex in $LIST; do
+            cargo fmt -p "$ex" -- --check
+          done
